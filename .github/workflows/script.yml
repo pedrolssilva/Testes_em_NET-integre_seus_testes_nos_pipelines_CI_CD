@@ -5,7 +5,7 @@
 name: Pipeline
 on:
   push:
-    branches: ['main']
+    branches: ['master']
 jobs:
   build:
     name: Minha primeira pipeline
