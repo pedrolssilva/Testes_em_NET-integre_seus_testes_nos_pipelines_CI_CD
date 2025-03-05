@@ -18,7 +18,7 @@ jobs:
       - name: Checkout do código
         uses: actions/checkout@v4
       - name: Build
-        run: dotnet build --no-restore
+        run: dotnet build ./JornadaMilhas-API.sln --no-restore
       - name: Execução do teste de unidade
         run: dotnet test ./test/JornadaMilhas.Unit.Test --no-build
       - name: Testes de Integração
