@@ -7,20 +7,22 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using Testcontainers.MsSql;
 
 namespace JornadaMilhas.Integration.Test.API
 {
-    public class JornadaMilhasWebApplicationFactory : WebApplicationFactory<Program>
+    public class JornadaMilhasWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
     {
-        public JornadaMilhasContext Context { get; }
+        public JornadaMilhasContext Context { get; private set; } = null!;
 
-        private IServiceScope scope;
+        private IServiceScope scope = null!;
 
-        public JornadaMilhasWebApplicationFactory()
-        {
-            this.scope = Services.CreateScope();
-            Context = scope.ServiceProvider.GetRequiredService<JornadaMilhasContext>();
-        }
+        private readonly MsSqlContainer
+            _msSqlContainer = new MsSqlBuilder()
+            .WithImage("mcr.microsoft.com/mssql/server:2022-latest")
+            .Build();
+
+
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -28,9 +30,9 @@ namespace JornadaMilhas.Integration.Test.API
             {
                 services.RemoveAll(typeof(DbContextOptions<JornadaMilhasContext>));
                 services.AddDbContext<JornadaMilhasContext>(options =>
-           options
-           .UseLazyLoadingProxies()
-           .UseSqlServer("Server=localhost,11433;Database=JornadaMilhasV3;User Id=sa;Password=Alura#2024;Encrypt=false;TrustServerCertificate=true;MultipleActiveResultSets=true;"));
+                    options
+                    .UseLazyLoadingProxies()
+                    .UseSqlServer(_msSqlContainer.GetConnectionString()));
             });
 
             base.ConfigureWebHost(builder);
@@ -49,6 +51,18 @@ namespace JornadaMilhas.Integration.Test.API
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", result!.Token);
 
             return client;
+        }
+
+        public async Task InitializeAsync()
+        {
+            await _msSqlContainer.StartAsync();
+            this.scope = Services.CreateScope();
+            Context = scope.ServiceProvider.GetRequiredService<JornadaMilhasContext>();
+        }
+
+        async Task IAsyncLifetime.DisposeAsync()
+        {
+            await _msSqlContainer.DisposeAsync();
         }
     }
 }
