@@ -23,7 +23,12 @@ jobs:
         run: dotnet build ./JornadaMilhas-API.sln --no-restore
       - name: Execução do teste de unidade
         run: dotnet test ./test/JornadaMilhas.Unit.Test --no-build
+      - name: Setup Docker
+        uses: docker/setup-buildx-action@v1
       - name: Testes de Integração
+        env:
+          TESTCONTAINERS_HOST_OVERRIDE: 'host.docker.internal'
+          TESTCONTAINERS_RYUK_DISABLED: 'true'
         run: dotnet test ./test/JornadaMilhas.Integration.Test.API --no-build
       - name: Publicando a API
         run: dotnet publish ./src/JornadaMilhas.API
