@@ -34,6 +34,8 @@ jobs:
         env:
           TESTCONTAINERS_HOST_OVERRIDE: 'host.docker.internal'
           TESTCONTAINERS_RYUK_DISABLED: 'true'
+          DOTNET_TEST_LOGGER: 'trx;LogFileName=test_results.trx'
+          TESTCONTAINERS_LOG_LEVEL: 'debug'
         run: dotnet test ./test/JornadaMilhas.Integration.Test.API --no-build
       - name: Publicando a API
         run: dotnet publish ./src/JornadaMilhas.API
