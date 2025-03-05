@@ -25,6 +25,11 @@ jobs:
         run: dotnet test ./test/JornadaMilhas.Unit.Test --no-build
       - name: Setup Docker
         uses: docker/setup-buildx-action@v1
+      - name: Login to Docker Hub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Testes de Integração
         env:
           TESTCONTAINERS_HOST_OVERRIDE: 'host.docker.internal'
