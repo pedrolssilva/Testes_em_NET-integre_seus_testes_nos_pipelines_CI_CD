@@ -12,14 +12,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Setup .NET
-        uses: actions/setup-dotnet@v3
+        uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
       - name: Checkout do código
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - name: Build
+        run: dotnet build --no-restore
       - name: Execução do teste de unidade
-        run: dotnet test ./test/JornadaMilhas.Unit.Test
+        run: dotnet test ./test/JornadaMilhas.Unit.Test --no-build
       - name: Testes de Integração
-        run: dotnet test ./test/JornadaMilhas.Integration.Test.API
+        run: dotnet test ./test/JornadaMilhas.Integration.Test.API --no-build
       - name: Publicando a API
         run: dotnet publish ./src/JornadaMilhas.API
