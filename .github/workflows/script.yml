@@ -20,6 +20,9 @@ jobs:
       - name: Execução do teste de unidade
         run: dotnet test ./test/JornadaMilhas.Unit.Test
       - name: Testes de Integração
+        env:
+          TESTCONTAINERS_HOST_OVERRIDE: 'host.docker.internal'
+          TESTCONTAINERS_RYUK_DISABLED: 'true'
         run: dotnet test ./test/JornadaMilhas.Integration.Test.API
       - name: Publicando a API
         run: dotnet publish ./src/JornadaMilhas.API
