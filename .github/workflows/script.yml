@@ -19,5 +19,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Execução do teste de unidade
         run: dotnet test ./test/JornadaMilhas.Unit.Test
+      - name: Testes de Integração
+        run: dotnet test ./test/JornadaMilhas.Integration.Test.API
       - name: Publicando a API
         run: dotnet publish ./src/JornadaMilhas.API
