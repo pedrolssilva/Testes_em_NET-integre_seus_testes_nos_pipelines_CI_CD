@@ -17,6 +17,8 @@ jobs:
           dotnet-version: 8.0.x
       - name: Checkout do código
         uses: actions/checkout@v4
+      - name: Restore
+        run: dotnet restore ./JornadaMilhas-API.sln
       - name: Build
         run: dotnet build ./JornadaMilhas-API.sln --no-restore
       - name: Execução do teste de unidade
