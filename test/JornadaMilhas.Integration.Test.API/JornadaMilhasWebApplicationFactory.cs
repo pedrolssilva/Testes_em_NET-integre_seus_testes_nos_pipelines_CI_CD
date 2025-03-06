@@ -2,6 +2,7 @@
 using JornadaMilhas.Dados;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -26,14 +27,33 @@ namespace JornadaMilhas.Integration.Test.API
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.ConfigureServices(services =>
+            builder.ConfigureTestServices(services =>
             {
-                services.RemoveAll(typeof(DbContextOptions<JornadaMilhasContext>));
+                var descriptorType =
+                    typeof(DbContextOptions<JornadaMilhasContext>);
+
+                var descriptor = services
+                    .SingleOrDefault(s => s.ServiceType == descriptorType);
+
+                if (descriptor is not null)
+                {
+                    services.Remove(descriptor);
+                }
+
                 services.AddDbContext<JornadaMilhasContext>(options =>
                     options
                     .UseLazyLoadingProxies()
                     .UseSqlServer(_msSqlContainer.GetConnectionString()));
             });
+
+            // builder.ConfigureServices(services =>
+            // {
+            //     services.RemoveAll(typeof(DbContextOptions<JornadaMilhasContext>));
+            //     services.AddDbContext<JornadaMilhasContext>(options =>
+            //         options
+            //         .UseLazyLoadingProxies()
+            //         .UseSqlServer(_msSqlContainer.GetConnectionString()));
+            // });
 
             base.ConfigureWebHost(builder);
         }
