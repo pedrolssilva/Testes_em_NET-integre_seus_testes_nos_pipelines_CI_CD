@@ -27,33 +27,14 @@ namespace JornadaMilhas.Integration.Test.API
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            builder.ConfigureTestServices(services =>
+            builder.ConfigureServices(services =>
             {
-                var descriptorType =
-                    typeof(DbContextOptions<JornadaMilhasContext>);
-
-                var descriptor = services
-                    .SingleOrDefault(s => s.ServiceType == descriptorType);
-
-                if (descriptor is not null)
-                {
-                    services.Remove(descriptor);
-                }
-
+                services.RemoveAll(typeof(DbContextOptions<JornadaMilhasContext>));
                 services.AddDbContext<JornadaMilhasContext>(options =>
                     options
                     .UseLazyLoadingProxies()
                     .UseSqlServer(_msSqlContainer.GetConnectionString()));
             });
-
-            // builder.ConfigureServices(services =>
-            // {
-            //     services.RemoveAll(typeof(DbContextOptions<JornadaMilhasContext>));
-            //     services.AddDbContext<JornadaMilhasContext>(options =>
-            //         options
-            //         .UseLazyLoadingProxies()
-            //         .UseSqlServer(_msSqlContainer.GetConnectionString()));
-            // });
 
             base.ConfigureWebHost(builder);
         }
