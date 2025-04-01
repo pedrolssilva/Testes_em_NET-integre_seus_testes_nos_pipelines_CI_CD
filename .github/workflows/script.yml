@@ -41,8 +41,8 @@ jobs:
         run: dotnet test ./test/JornadaMilhas.Integration.Test.API --no-build
       - name: Publicando a API
         run: dotnet publish -c Release -o "${{env.DOTNET_ROOT}}/myapp" ./src/JornadaMilhas.API
-      - name: Upload de artefato para deploy
-        uses: actions/upload-artifact@v3
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
         with:
           name: .net-app
           path: ${{env.DOTNET_ROOT}}/myapp
