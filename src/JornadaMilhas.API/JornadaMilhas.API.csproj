@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <!--<InvariantGlobalization>true</InvariantGlobalization>-->
     
-    <UserSecretsId>0a5b1c12-fb2f-4d73-9648-f43e44674966</UserSecretsId>
+    <UserSecretsId>5d5eb24e-31d5-40ef-a116-28a3926f794f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     <DockerfileContext>..\..</DockerfileContext>
     <DockerComposeProjectPath>..\..\docker-compose.dcproj</DockerComposeProjectPath>
