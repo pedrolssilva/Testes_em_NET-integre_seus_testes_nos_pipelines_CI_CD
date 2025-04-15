@@ -32,7 +32,7 @@ jobs:
       #     username: ${{ secrets.DOCKER_USERNAME }}
       #     password: ${{ secrets.DOCKER_PASSWORD }}
       - name: Testes de Integração
-        if: ${{ false }}
+        # if: ${{ false }}
         # env:
         #   TESTCONTAINERS_HOST_OVERRIDE: 'host.docker.internal'
         #   TESTCONTAINERS_RYUK_DISABLED: 'true'
