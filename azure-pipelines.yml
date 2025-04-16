@@ -1,40 +1,40 @@
 trigger:
-  branches: 
-   include:
-     - main
+  branches:
+    include:
+      - master
 pool:
   vmImage: ubuntu-latest
 
 steps:
-- task: DotNetCoreCLI@2
-  displayName: 'Build do projeto'
-  inputs:
-    projects: '**/src/JornadaMilhas.API/JornadaMilhas.API.csproj'
-    arguments: '--configuration $(BuildConfiguration)'
+  - task: DotNetCoreCLI@2
+    displayName: 'Build do projeto'
+    inputs:
+      projects: '**/src/JornadaMilhas.API/JornadaMilhas.API.csproj'
+      arguments: '--configuration $(BuildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Testes de Unidade'
-  inputs:
-    command: test
-    projects: '**/test/JornadaMilhas.Unit.Test/JornadaMilhas.Unit.Test.csproj'
-    arguments: '--configuration $(BuildConfiguration)'
+  - task: DotNetCoreCLI@2
+    displayName: 'Testes de Unidade'
+    inputs:
+      command: test
+      projects: '**/test/JornadaMilhas.Unit.Test/JornadaMilhas.Unit.Test.csproj'
+      arguments: '--configuration $(BuildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Testes de Integração'
-  inputs:
-    command: test
-    projects: '**/test/JornadaMilhas.Integration.Test.API/JornadaMilhas.Integration.Test.API.csproj'
+  - task: DotNetCoreCLI@2
+    displayName: 'Testes de Integração'
+    inputs:
+      command: test
+      projects: '**/test/JornadaMilhas.Integration.Test.API/JornadaMilhas.Integration.Test.API.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: Publish
-  inputs:
-    command: publish
-    publishWebProjects: True
-    arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
-    zipAfterPublish: True
+  - task: DotNetCoreCLI@2
+    displayName: Publish
+    inputs:
+      command: publish
+      publishWebProjects: True
+      arguments: '--configuration $(BuildConfiguration) --output $(build.artifactstagingdirectory)'
+      zipAfterPublish: True
 
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact'
-  inputs:
-    PathtoPublish: '$(build.artifactstagingdirectory)'
-  condition: succeededOrFailed()
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact'
+    inputs:
+      PathtoPublish: '$(build.artifactstagingdirectory)'
+    condition: succeededOrFailed()
