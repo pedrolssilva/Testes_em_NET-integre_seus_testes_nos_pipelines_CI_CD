@@ -71,6 +71,16 @@ public static class OfertaViagemExtensions
             return Results.Ok(converter.EntityListToResponseList(oferta));
         }).WithTags("Oferta Viagem").WithSummary("Obtem oferta de viagem paginado.").WithOpenApi().RequireAuthorization();
 
-      
+        app.MapGet("/ofertas-viagem/maior-desconto", async ([FromServices] OfertaViagemConverter converter,
+        [FromServices] EntityDAL<OfertaViagem> entityDAL) =>
+        {
+            var lista = await entityDAL.Listar();
+            var oferta = lista.FirstOrDefault();
+            if (oferta is null) return Results.NotFound();
+            return Results.Ok(converter.EntityToResponse(oferta));
+        })
+        .WithTags("Oferta Viagem").WithSummary("Obtem oferta de viagem com maior desconto.")
+        .WithOpenApi()
+        .RequireAuthorization();
     }
 }
