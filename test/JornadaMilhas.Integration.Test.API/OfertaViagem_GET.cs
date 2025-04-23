@@ -1,7 +1,9 @@
-﻿using JornadaMilhas.Dominio.Entidades;
+﻿using JornadaMilhas.API.DTO.Response;
+using JornadaMilhas.Dominio.Entidades;
 using JornadaMilhas.Dominio.ValueObjects;
 using JornadaMilhas.Integration.Test.API.DataBuilders;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Net.Http.Json;
 
 namespace JornadaMilhas.Integration.Test.API;
@@ -166,6 +168,37 @@ public class OfertaViagem_GET : IClassFixture<JornadaMilhasWebApplicationFactory
 
         // Assert
         Assert.NotNull(response);
+    }
+
+    [Fact]
+    public async Task Recuperar_Ultima_OfertaViagem_Inserida()
+    {
+        // Arrange
+        app.Context.Database.ExecuteSqlRaw("Delete from OfertasViagem");
+
+        OfertaViagemDataBuilder databuilder = new OfertaViagemDataBuilder();
+
+        var listaOfertas = databuilder.Generate(3);
+
+        app.Context.OfertasViagem.AddRange(listaOfertas);
+        app.Context.SaveChanges();
+
+        var lastInserted = listaOfertas.Last();
+
+        using var client = await app.GetClientWithAccessTokenAsync();
+
+        // Act
+        var response = await client.GetFromJsonAsync<OfertaViagemResponse>($"/ofertas-viagem/ultima-inserida");
+
+        // Assert
+        Assert.Equivalent(new
+        {
+            Id = lastInserted.Id,
+            Rota = new { lastInserted.Rota.Id, lastInserted.Rota.Origem, lastInserted.Rota.Destino },
+            Periodo = new { lastInserted.Periodo.DataInicial, lastInserted.Periodo.DataFinal },
+            Preco = lastInserted.Preco
+        },
+            response, false);
     }
 
 }

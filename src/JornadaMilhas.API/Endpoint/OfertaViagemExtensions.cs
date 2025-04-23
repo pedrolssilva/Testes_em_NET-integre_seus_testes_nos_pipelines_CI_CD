@@ -82,5 +82,25 @@ public static class OfertaViagemExtensions
         .WithTags("Oferta Viagem").WithSummary("Obtem oferta de viagem com maior desconto.")
         .WithOpenApi()
         .RequireAuthorization();
+
+        app.MapGet("/ofertas-viagem/", async ([FromServices] OfertaViagemConverter converter, [FromServices] EntityDAL<OfertaViagem> entityDAL, [FromQuery] int pagina = 1, [FromQuery] int tamanhoPorPagina = 25) =>
+        {
+            var oferta = await entityDAL.ListarPaginado(pagina, tamanhoPorPagina);
+            if (oferta is null) return Results.NotFound();
+            return Results.Ok(converter.EntityListToResponseList(oferta));
+        }).WithTags("Oferta Viagem").WithSummary("Obtem oferta de viagem paginado.").WithOpenApi().RequireAuthorization();
+
+        app.MapGet("/ofertas-viagem/ultima-inserida", async ([FromServices] OfertaViagemConverter converter,
+        [FromServices] EntityDAL<OfertaViagem> entityDAL) =>
+        {
+            var lastOffer = await entityDAL.UltimoRegistroAsync();
+            if (lastOffer is null) 
+                return Results.NotFound();
+            var result = converter.EntityToResponse(lastOffer);
+            return Results.Ok(result);
+        })
+        .WithTags("Oferta Viagem").WithSummary("Obtem a última oferta de viagem inserida.")
+        .WithOpenApi()
+        .RequireAuthorization();
     }
 }
